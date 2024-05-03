@@ -1,6 +1,6 @@
 #include "imageminer.h"
 
 // Temporary function for testing architecture
-int sum(int a, int b){
-	return (a + b);
+char * sum(int argc, char **argv){
+	return "five";
 }

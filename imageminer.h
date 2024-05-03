@@ -8,6 +8,6 @@
 #define IMAGEMINER
 
 // Function for testing architecture
-int sum(int a, int b);
+char * sum(int argc, char **argv);
 
 #endif
