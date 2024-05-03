@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv)
 {
-	printf("2 + 3 = %s \n", sum(argc, argv));
+	printf("%s \n", imageminer(argc, argv));
 
 	return 0;
 }
