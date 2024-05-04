@@ -1,5 +1,5 @@
 // C standard headers
-#include <stdio.h>	// For print debugging, remove later
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -47,38 +47,15 @@ int imageQrCount(int argc, char **argv){
 }
 
 char * imageContents(int argc, char **argv){
-	struct quirc *q; // Data location to hold qr-decoder
-	const int BUFFER_LENGTH = 2048;
+	// Data location to hold qr-decoder
+	struct quirc *q;
+
+	// Variables for holding/decoding qr-code related data
+	const int BUFFER_LENGTH = 2048; // Currently reserving 2*2 = 4kB ram for reading operations
 	char mainBuffer[BUFFER_LENGTH];
 	char tmpBuffer[BUFFER_LENGTH];
 	int processedLength = 0;
 	int totalLength = 0;
-
-/*
-	char* one = "quick";
-	char* two = "brown";
-	char* three = "fox";
-
-	processedLength = snprintf(mainBuffer, BUFFER_LENGTH,
-		"%s %s %s %s",
-		tmpBuffer, one, two, three
-	);
-
-	strncpy(tmpBuffer, mainBuffer, BUFFER_LENGTH);
-
-	processedLength = snprintf(mainBuffer, BUFFER_LENGTH,
-		"%s %s %s %s",
-		tmpBuffer, two, two, three
-	);
-
-	strncpy(tmpBuffer, mainBuffer, BUFFER_LENGTH);
-
-	if (processedLength >= BUFFER_LENGTH){
-		return "ERROR: amount of data in qr-codes exceeded 2048 byte buffer";
-	}
-
-	printf("Buffer: %s \n", mainBuffer);
-*/
 
 	if (argc < 2){
 		return "ERROR: incorrect usage. Specify file to test with.";
@@ -119,40 +96,31 @@ char * imageContents(int argc, char **argv){
 			err = quirc_decode(&code, &data);
 		}
 
-		// For debugging (On cleanup remove stdio)
 		if (data.payload_len > 0){
-
 			processedLength = snprintf(mainBuffer, BUFFER_LENGTH, "%s<payload id=\"%d\">%s</payload>",tmpBuffer,i+1,data.payload);
 			totalLength += processedLength;
 			if (totalLength >= BUFFER_LENGTH){
-				return "ERROR: amount of data in qr-codes exceeded 2048 byte buffer";
+				return "ERROR: amount of data in qr-codes exceeded buffer";
 			}
 			strncpy(tmpBuffer, mainBuffer, BUFFER_LENGTH);
-/*
-			printf("\n");
-			printf("Payload %d : %s \n", i+1, data.payload);
-			printf("Buffer: %s \n", mainBuffer);
-*/
-//			printf("No %d : %s \n", i+1, buffer);
-//			printf("First char of payload %d : %c \n", i+1, data.payload[0]);
-//			printf("Length of payload %d : %d \n", i+1, data.payload_len);
-
-			//return &data.payload[0];
 		}
 	}
 
+	// Saving buffer contents (without reserved but not filled space) to a format compatible with char* return type. Uses malloc, has to use free on return side.
 	if (totalLength > 0){
 		char *returnable = malloc((totalLength * sizeof(char)));
 		if (returnable) {
 			strncpy(returnable, mainBuffer, totalLength);
 
 			quirc_destroy(q);
-	//		return &mainBuffer[0];
 			return (returnable);
+		} else {
+			free(returnable);
+			quirc_destroy(q);
+			return "ERROR: unable to convert buffer to returnable format";
 		}
-		free(returnable);
 	}
 
 	quirc_destroy(q);
-	return "imageContents EOF";
+	return "imageContents EOF, no readable QR-codes found";
 }
