@@ -5,7 +5,27 @@
 
 int main(int argc, char **argv)
 {
-	printf("%s \n", imageminer(argc, argv));
+	// Test code for imageQrCount
+	int iqrcOutp = imageQrCount(argc, argv);
+	switch (iqrcOutp) {
+		case -1:
+			printf("imageQrCount EOF \n");
+			break;
+		case -2:
+			printf("imageQrCount ERROR %d : incorrect usage, unspecified file \n", iqrcOutp);
+			break;
+		case -3:
+			printf("imageQrCount ERROR %d : Failed at creating quirc object \n", iqrcOutp);
+			break;
+		case -4:
+			printf("imageQrCount ERROR %d : Failed to load image \n", iqrcOutp);
+			break;
+		default:
+			printf("Counted %d QR-codes in file \n", iqrcOutp);
+	}
+
+	// Test code for imageContenrs
+	printf("%s \n", imageContents(argc, argv));
 
 	return 0;
 }

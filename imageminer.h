@@ -7,7 +7,18 @@
 #ifndef IMAGEMINER
 #define IMAGEMINER
 
-// Function for testing architecture
-char * imageminer(int argc, char **argv);
+/*
+ * A function that calculates the amount of QR-codes in an image.
+ *
+ * Possible returns:
+ * -1: reached the end of the function without reaching other return statement (EOF)
+ * -2: ERROR: incorrect usage, unspecified file
+ * -3: ERROR: Failed at creating quirc object
+ * -4: ERROR: Failed to load image
+ */
+int imageQrCount(int argc, char **argv);
+
+
+char * imageContents(int argc, char **argv);
 
 #endif
