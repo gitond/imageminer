@@ -1,6 +1,9 @@
 // Driver for imageminer.c
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "imageminer.h"
 
 int main(int argc, char **argv)
@@ -25,7 +28,14 @@ int main(int argc, char **argv)
 	}
 
 	// Test code for imageContenrs
-	printf("%s \n", imageContents(argc, argv));
+	char *icOutp = imageContents(argc, argv);
+
+	printf("%s \n", icOutp);
+
+	// Buffer to char* conversion of payload uses malloc, free command is needed for memory management.
+	if(strstr(icOutp, "</payload>")){
+		free( icOutp );
+	}
 
 	return 0;
 }
